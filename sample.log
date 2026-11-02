@@ -1,0 +1,9 @@
+FAILED user=admin ip=192.168.1.10
+SUCCESS user=aryan ip=192.168.1.12
+FAILED user=root ip=192.168.1.10
+FAILED user=test ip=192.168.1.10
+FAILED user=guest ip=192.168.1.15
+SUCCESS user=aryan ip=192.168.1.12
+FAILED user=admin ip=192.168.1.15
+FAILED user=admin ip=192.168.1.10
+FAILED user=root ip=192.168.1.20
