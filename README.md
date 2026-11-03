@@ -43,7 +43,6 @@ failed_login_analyzer/
 ├── main.py
 ├── sample.log
 ├── test.log
-├── report.txt
 ├── README.md
 └── .gitignore
 ```
