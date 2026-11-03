@@ -1,16 +1,34 @@
 
-filename = "sample.log"
+import ipaddress
+
+
+def extract_ip(line):
+    data = line.split()
+    for item in data:
+        if item.startswith("ip="):
+            ip = item.split("=", 1)[1]
+
+            try:
+                ipaddress.ip_address(ip)
+                return ip
+            except ValueError:
+                return None
+    return None
 
 def count_failed_logins(filename):
-
     attempts = {}
     try:
-      with open(filename, "r") as file:
-        
-        for line in file:
-            if "FAILED" in line:
-                data = line.split(" ")
-                ip = data[2].split("=")[1]
+        with open(filename, "r") as file:
+            for line_number, line in enumerate(file, start=1):
+                line = line.strip()
+
+                if not line.startswith("FAILED"):
+                    continue
+                ip = extract_ip(line)
+
+                if ip is None:
+                    print(f"Skipping malformed entry on line {line_number}")
+                    continue
 
                 if ip in attempts:
                     attempts[ip] += 1
@@ -18,21 +36,26 @@ def count_failed_logins(filename):
                     attempts[ip] = 1
 
     except FileNotFoundError:
-        print(f"Error, log file not found.")
-    
+        print("Error: Log file not found!")
+        return {}
     return attempts
 
 def display_report(attempts):
     threshold = 3
-    print("Failed login summary:")
+
+    print("\nFailed login summary:")
+
     for ip in attempts:
         print(ip, ":", attempts[ip], "failed attempts")
-
     print("\nSuspicious IPs:")
 
     for ip in attempts:
         if attempts[ip] >= threshold:
             print(ip)
 
+
+# Main program
+
+filename = "sample.log"
 attempts = count_failed_logins(filename)
 display_report(attempts)
