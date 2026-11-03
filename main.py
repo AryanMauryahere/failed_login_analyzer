@@ -1,30 +1,33 @@
-file = open("sample.log", "r")
 
-attempts = {}
-treshold = 3
+def count_failed_logins(filename):
 
-for line in file:
-  if "FAILED" in line:
-    result = line.split(" ")
-    # print(result[2].split("=")[1])
-    ip = result[2].split("=")[1]
+    attempts = {}
 
-    if ip in attempts:
-      attempts[ip] += 1
-    else:
-      attempts[ip] = 1
+    with open(filename, "r") as file:
+      for line in file:
 
-    # if attempts[ip] >= treshold:
-    #   print(f"IP address {ip} has exceeded the threshold of {treshold} failed login attempts.")
-    # else:
-      # print(f"IP address {ip} has {attempts[ip]} failed login attempts.")
+          if "FAILED" in line:
+              data = line.split(" ")
+              ip = data[2].split("=")[1]
 
-file.close()
+              if ip in attempts:
+                  attempts[ip] += 1
+              else:
+                  attempts[ip] = 1
+      return attempts
 
-print("Failed login attempts by IP address:")
-for ip in attempts:
-  print(f"{ip}: {attempts[ip]} attempts")
+def display_report(attempts):
+    threshold = 3
+    print("Failed login summary:")
+    for ip in attempts:
+        print(ip, ":", attempts[ip], "failed attempts")
 
-for ip in attempts:
-  if attempts[ip] >= treshold:
-    print(f"Suspicious IP addresses : {ip}")
+    print("\nSuspicious IPs:")
+
+    for ip in attempts:
+        if attempts[ip] >= threshold:
+            print(ip)
+
+filename = "sample.log"
+attempts = count_failed_logins(filename)
+display_report(attempts)
