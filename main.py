@@ -1,20 +1,26 @@
 
+filename = "sample.log"
+
 def count_failed_logins(filename):
 
     attempts = {}
+    try:
+      with open(filename, "r") as file:
+        
+        for line in file:
+            if "FAILED" in line:
+                data = line.split(" ")
+                ip = data[2].split("=")[1]
 
-    with open(filename, "r") as file:
-      for line in file:
+                if ip in attempts:
+                    attempts[ip] += 1
+                else:
+                    attempts[ip] = 1
 
-          if "FAILED" in line:
-              data = line.split(" ")
-              ip = data[2].split("=")[1]
-
-              if ip in attempts:
-                  attempts[ip] += 1
-              else:
-                  attempts[ip] = 1
-      return attempts
+    except FileNotFoundError:
+        print(f"Error, log file not found.")
+    
+    return attempts
 
 def display_report(attempts):
     threshold = 3
@@ -28,6 +34,5 @@ def display_report(attempts):
         if attempts[ip] >= threshold:
             print(ip)
 
-filename = "sample.log"
 attempts = count_failed_logins(filename)
 display_report(attempts)
