@@ -1,9 +1,10 @@
 
+import sys
 import ipaddress
-
 
 def extract_ip(line):
     data = line.split()
+
     for item in data:
         if item.startswith("ip="):
             ip = item.split("=", 1)[1]
@@ -17,6 +18,7 @@ def extract_ip(line):
 
 def count_failed_logins(filename):
     attempts = {}
+
     try:
         with open(filename, "r") as file:
             for line_number, line in enumerate(file, start=1):
@@ -24,6 +26,7 @@ def count_failed_logins(filename):
 
                 if not line.startswith("FAILED"):
                     continue
+
                 ip = extract_ip(line)
 
                 if ip is None:
@@ -42,11 +45,11 @@ def count_failed_logins(filename):
 
 def display_report(attempts):
     threshold = 3
-
     print("\nFailed login summary:")
 
     for ip in attempts:
         print(ip, ":", attempts[ip], "failed attempts")
+
     print("\nSuspicious IPs:")
 
     for ip in attempts:
@@ -54,8 +57,10 @@ def display_report(attempts):
             print(ip)
 
 
-# Main program
+if len(sys.argv) < 2:
+    print("Usage: python main.py <log_file>")
+    sys.exit(1)
 
-filename = "sample.log"
+filename = sys.argv[1]
 attempts = count_failed_logins(filename)
 display_report(attempts)
