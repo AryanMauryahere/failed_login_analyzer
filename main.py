@@ -64,3 +64,13 @@ if len(sys.argv) < 2:
 filename = sys.argv[1]
 attempts = count_failed_logins(filename)
 display_report(attempts)
+
+with open("report.txt" , "w") as report_file:
+    report_file.write("Failed login summary:\n")
+    for ip in attempts:
+        report_file.write(f"{ip} : {attempts[ip]} failed attempts\n")
+
+    report_file.write("\nSuspicious IPs:\n")
+    for ip in attempts:
+        if attempts[ip] >= 3:
+            report_file.write(f"{ip}\n")
